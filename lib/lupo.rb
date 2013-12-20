@@ -9,7 +9,7 @@ require 'concord'
 class Lupo < Module
   private_class_method :new
 
-  # Build a module providing #each, Enumerable and Concord
+  # Build a module providing #each and Enumerable
   #
   # @example
   #
@@ -37,7 +37,7 @@ class Lupo < Module
     new(name, [Enumerable])
   end
 
-  # Build a module providing #each and Enumerable
+  # Build a module providing #each, Enumerable and Concord
   #
   # @example
   #
