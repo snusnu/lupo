@@ -1,24 +1,31 @@
 # encoding: utf-8
 
-# Includes Enumerable and provides #each
+require 'concord'
+
+# Includes Enumerable and provides #each.
+# Optionally includes Concord to provide
+# #initialize and Equalizer for equality
+# methods
 class Lupo < Module
-  # Initialize a new instance
+  private_class_method :new
+
+  # Build a module providing #each, Enumerable and Concord
   #
   # @example
   #
-  #   require 'lupo'
-  #
   #   class Collection
-  #     include Lupo.new(:entries)
+  #     include Lupo.enumerable(:entries)
   #
   #     def initialize(entries)
   #       @entries = entries
   #     end
   #   end
   #
-  #   Collection.new([1,2,3]).each do |entry|
-  #     puts(entry)
-  #   end
+  #   collection = Collection.new([1,2,3])
+  #
+  #   collection.each { |i| puts(i) } # => collection
+  #   collection.each.to_a            # => [1,2,3]
+  #   collection.is_a?(Enumerable)    # => true
   #
   # @param [#to_s] name
   #   the name of the enumerable
@@ -26,13 +33,63 @@ class Lupo < Module
   # @return [undefined]
   #
   # @api public
-  def initialize(name)
-    @name = :"@#{name}"
+  def self.enumerable(name)
+    new(name, [Enumerable])
+  end
+
+  # Build a module providing #each and Enumerable
+  #
+  # @example
+  #
+  #   class Collection
+  #     include Lupo.collection(:entries)
+  #   end
+  #
+  #   collection = Collection.new([1,2,3])
+  #
+  #   collection.each { |i| puts(i) } # => collection
+  #   collection.each.to_a            # => [1,2,3]
+  #   collection.is_a?(Enumerable)    # => true
+  #
+  #   other = Collection.new([1,2,3])
+  #
+  #   # see equalizer for detailed docs
+  #   collection.equal?(other) # => false
+  #   collection.eql?(other)   # => true
+  #   collection == other      # => true
+  #
+  # @param [#to_s] name
+  #   the name of the enumerable
+  #
+  # @return [undefined]
+  #
+  # @api public
+  def self.collection(name)
+    new(name, [Enumerable, Concord.new(name)])
+  end
+
+  # Initialize a new instance
+  #
+  # @param [#to_s] name
+  #   the name of the enumerable
+  #
+  # @param [#each] modules
+  #   the modules to include into a host
+  #
+  # @return [undefined]
+  #
+  # @api private
+  def initialize(name, modules)
+    @modules, @body = modules, ->(&block) {
+      return to_enum unless block
+      instance_variable_get(:"@#{name}").each(&block)
+      self
+    }
   end
 
   private
 
-  # Define the #each method on the host
+  # Define the #each method on the host and include modules
   #
   # @param [Object] host
   #   the hosting object
@@ -41,14 +98,9 @@ class Lupo < Module
   #
   # @api private
   def included(host)
-    enumerable = @name
-    host.class_eval do
-      include Enumerable
-      define_method :each do |&block|
-        return to_enum unless block
-        instance_variable_get(enumerable).each(&block)
-        self
-      end
+    host.instance_exec(@modules, @body) do |modules, body|
+      include(*modules)
+      define_method(:each, &body)
     end
   end
 end # Lupo

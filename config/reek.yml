@@ -33,7 +33,7 @@ LongParameterList:
   max_params: 1
   overrides:
     initialize:
-      max_params: 1
+      max_params: 2
 LongYieldList:
   enabled: true
   exclude: []
@@ -54,7 +54,7 @@ RepeatedConditional:
 TooManyInstanceVariables:
   enabled: true
   exclude: []
-  max_instance_variables: 1
+  max_instance_variables: 2
 TooManyMethods:
   enabled: true
   exclude: []
@@ -62,7 +62,7 @@ TooManyMethods:
 TooManyStatements:
   enabled: true
   exclude: []
-  max_statements: 7
+  max_statements: 6
 UncommunicativeMethodName:
   enabled: true
   exclude: []

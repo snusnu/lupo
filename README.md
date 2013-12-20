@@ -17,17 +17,38 @@
 ```ruby
 require 'lupo'
 
-class Collection
-  include Lupo.new(:entries)
+class TaskList
+  include Lupo.enumerable(:tasks)
 
-  def initialize(entries)
-    @entries = entries
+  def initialize(name, tasks)
+    @name, @tasks = name, tasks
   end
 end
 
-Collection.new([1,2,3]).each do |entry|
-  puts(entry)
+list = TaskList.new('secret', %w[this and that])
+
+list.each { |t| puts(t) }     # => list
+list.each.to_a                # => ['this', 'and', 'that']
+list.is_a?(Enumerable)        # => true
+list.methods.include?(:tasks) # => false
+
+class ItemList
+  include Lupo.collection(:items)
 end
+
+list = ItemList.new(%w[this and that])
+
+list.each { |i| puts(i) }               # => list
+list.each.to_a                          # => ['this', 'and', 'that']
+list.is_a?(Enumerable)                  # => true
+list.protected_methods.include?(:items) # => true
+
+other = ItemList.new(%w[this and that])
+
+# see equalizer for detailed docs
+list.equal?(other) # => false
+list.eql?(other)   # => true
+list == other      # => true
 ```
 
 ## Credits
