@@ -6,6 +6,11 @@ require 'concord'
 # Optionally includes Concord to provide
 # #initialize and Equalizer for equality
 # methods
+#
+# Remember that Enumerable#entries is part
+# of ruby, so avoiding "entries" as the
+# internal enumerable's name is a good idea
+# if your enumerable is no array instance.
 class Lupo < Module
   private_class_method :new
 
@@ -14,10 +19,10 @@ class Lupo < Module
   # @example
   #
   #   class Collection
-  #     include Lupo.enumerable(:entries)
+  #     include Lupo.enumerable(:items)
   #
-  #     def initialize(entries)
-  #       @entries = entries
+  #     def initialize(items)
+  #       @items = items
   #     end
   #   end
   #
@@ -42,7 +47,7 @@ class Lupo < Module
   # @example
   #
   #   class Collection
-  #     include Lupo.collection(:entries)
+  #     include Lupo.collection(:items)
   #   end
   #
   #   collection = Collection.new([1,2,3])

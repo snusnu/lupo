@@ -15,6 +15,12 @@
 ## Usage
 
 ```ruby
+
+# Remember that Enumerable#entries is part
+# of ruby, so avoiding "entries" as the
+# internal enumerable's name is a good idea
+# if your enumerable is no array instance.
+
 require 'lupo'
 
 class TaskList
