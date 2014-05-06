@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.extra_rdoc_files = %w[LICENSE README.md CONTRIBUTING.md]
   gem.license          = 'MIT'
 
-  gem.add_dependency 'concord', '~> 0.1.4'
+  gem.add_dependency 'concord', '~> 0.1.5'
 
   gem.add_development_dependency 'bundler', '~> 1.6.1'
 end
