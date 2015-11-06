@@ -85,7 +85,7 @@ class Lupo < Module
   #
   # @api private
   def initialize(name, modules)
-    @modules, @body = modules, ->(&block) {
+    @modules, @body = modules, lambda { |&block|
       return to_enum unless block
       instance_variable_get(:"@#{name}").each(&block)
       self
